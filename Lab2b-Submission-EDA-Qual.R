@@ -412,7 +412,7 @@ evaluation_likes_and_wishes <- student_performance_dataset %>%
   mutate(`Student's Gender` =
            ifelse(gender == 1, "Male", "Female")) %>%
   rename(`Class Group` = class_group) %>%
-  rename(Likes = `D - 1. \nWrite two things you like about the teaching and learning in this unit so far.`) %>% # nolint
+  rename(Likes = `D - 1. write two things you like about the teaching and learning in this unit so far`) %>% # nolint
   rename(Wishes = `D - 2. Write at least one recommendation to improve the teaching and learning in this unit (for the remaining weeks in the semester)`) %>% # nolint
   select(`Class Group`,
          `Student's Gender`, `Average Course Evaluation Rating`,
@@ -473,3 +473,48 @@ View(evaluation_likes_and_wishes_stemmed)
 
 evaluation_likes_and_wishes_lemmatized <- lemmatize_words(evaluation_likes_and_wishes)
 View(evaluation_likes_and_wishes_lemmatized)
+
+
+## Tokenization & Stopwords Removal
+
+install.packages("tidyverse")
+install.packages("dplyr", dependencies = TRUE)
+library(tidyverse)
+library(dplyr)
+require(tm)
+require(dplyr)
+install.packages("tidytext")
+library(tidytext)
+
+stopwords()
+sort(stopwords())
+#removed_stopwords_tokenized_data = removeWords(tokenized_data, stopwords())
+evaluation_likes_filtered_tokenized <- evaluation_likes_and_wishes %>% # nolint
+  unnest_tokens(word, Likes) %>%
+  # do not join where the word is in the list of stopwords
+  anti_join(stop_words, by = c("word")) %>%
+  distinct() %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Likes` = word) %>%
+  select(-Wishes, -"Class Group", -"Student's Gender" , -"Average Course Evaluation Rating")
+
+
+evaluation_wishes_filtered_tokenized <- evaluation_likes_and_wishes %>% # nolint
+  unnest_tokens(word, Wishes) %>%
+  # do not join where the word is in the list of stopwords
+  anti_join(stop_words, by = c("word")) %>%
+  distinct() %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Wishes ` = word) %>%
+  select(-Likes, -"Class Group", -"Student's Gender" , -"Average Course Evaluation Rating")
+
+write.csv(evaluation_likes_filtered_tokenized,
+          file = "data/evaluation_likes_filtered_tokenized.csv",
+          row.names = FALSE)
+
+write.csv(evaluation_wishes_filtered_tokenized,
+          file = "data/evaluation_wishes_filtered_tokenized.csv",
+          row.names = FALSE)
+
+View(evaluation_likes_filtered_tokenized)
+View(evaluation_wishes_filtered_tokenized)
