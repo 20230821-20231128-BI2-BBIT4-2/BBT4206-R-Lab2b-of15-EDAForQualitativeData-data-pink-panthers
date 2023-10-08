@@ -28,7 +28,7 @@
 # "renv" It can be installed as follows:
 # if (!is.element("renv", installed.packages()[, 1])) {
 # install.packages("renv", dependencies = TRUE,
-repos = "https://cloud.r-project.org") # nolint
+# repos = "https://cloud.r-project.org") # nolint
 # }
 # require("renv") # nolint
 
@@ -313,7 +313,7 @@ kable_theme <- function(dat, caption) {
 # STEP 3. Load the Dataset ----
 student_performance_dataset <-
   readr::read_csv(
-                  "data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.CSV", # nolint
+                  "data/student.data.CSV", # nolint
                   col_types =
                   readr::cols(
                               class_group =
@@ -453,6 +453,7 @@ dim(student_performance_dataset)
 
 # Data Types
 sapply(student_performance_dataset, class)
+library(dplyr)
 glimpse(student_performance_dataset)
 
 # Summary of each variable
@@ -515,6 +516,12 @@ evaluation_per_group_per_gender <- student_performance_dataset %>% # nolint
 View(evaluation_per_group_per_gender)
 
 # Decorated tabular output
+library(kableExtra)
+library(knitr)
+library(dplyr)
+
+remotes::install_github("renkun-ken/formattable")
+
 evaluation_per_group_per_gender %>%
   rename(`Class Group` = class_group) %>%
   rename(`Average Course Evaluation Rating` = average_evaluation_rating) %>%
@@ -579,8 +586,8 @@ evaluation_likes_and_wishes <- student_performance_dataset %>%
   mutate(`Student's Gender` =
            ifelse(gender == 1, "Male", "Female")) %>%
   rename(`Class Group` = class_group) %>%
-  rename(Likes = `D - 1. \nWrite two things you like about the teaching and learning in this unit so far.`) %>% # nolint
-  rename(Wishes = `D - 2. Write at least one recommendation to improve the teaching and learning in this unit (for the remaining weeks in the semester)`) %>% # nolint
+  rename(Wishes = `D - 2. Write at least one recommendation to improve the teaching and learning in this unit (for the remaining weeks in the semester)`) %>% # nolint,
+  rename(Likes = `D - 1. write two things you like about the teaching and learning in this unit so far`) %>% # nolint
   select(`Class Group`,
          `Student's Gender`, `Average Course Evaluation Rating`,
          Likes, Wishes) %>%
