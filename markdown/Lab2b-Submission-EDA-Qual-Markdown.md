@@ -1,3 +1,126 @@
+Business Intelligence Project
+================
+
+- [Business Intelligence Lab Submission
+  Markdown](#business-intelligence-lab-submission-markdown)
+- [Student Details](#student-details)
+- [Setup Chunk](#setup-chunk)
+- [Step 1: Install and Load Packages](#step-1-install-and-load-packages)
+- [Step 2: Customize the Visualizations, Tables, and Colour
+  Scheme](#sec-step-2-customize-the-visualizations-tables-and-colour-scheme)
+- [Step 3: Load Dataset and
+  Description](#sec-step-3-load-dataset-and-description)
+  - [Dimensions](#dimensions)
+  - [Data Types](#data-types)
+  - [Summary](#summary)
+- [Step 4: Create a subset of the data using the “dplyr” package
+  ----](#step-4-create-a-subset-of-the-data-using-the-dplyr-package-----)
+- [Step 5: Data Cleansing for Qualitative
+  Data](#step-5-data-cleansing-for-qualitative-data)
+  - [Contractions](#contractions)
+  - [Removing Special Characters](#removing-special-characters)
+  - [Stemming/Lemmatization](#stemminglemmatization)
+  - [Tokenization & Stopwords Removal](#tokenization--stopwords-removal)
+- [Step 6: Word Count](#sec-step-6-)
+- [Step 7: Top Word](#step-7-top-word)
+- [Step 8: Word Cloud](#step-8-word-cloud)
+- [Step 9: Term Frequency - Inverse Document Frequency (TF -
+  IDF)](#step-9-term-frequency---inverse-document-frequency-tf---idf)
+  - [Evaluation Likes](#evaluation-likes)
+  - [Evaluation Wishes](#evaluation-wishes)
+
+# Business Intelligence Lab Submission Markdown
+
+<Data Pink Panthers> \<9/10/23\>
+
+# Student Details
+
+<table style="width:99%;">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 38%" />
+<col style="width: 17%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Student ID Numbers and Names of Group Members</strong></td>
+<td><p>| 1. 137315 - C - Yashvi Bhadania</p>
+<p>| 2. 134668 - C - June Ndinda Mutiso</p>
+<p>| 3. 135227 - C - Innocent Mbuvi</p>
+<p>| 4. 134253 - C - Uzair Farooq</p>
+<p>| 5. 135109 - C - Jackson Kaburu</p></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td><strong>GitHub Classroom Group Name</strong></td>
+<td>Data Pink Panthers</td>
+</tr>
+<tr class="odd">
+<td><strong>Course Code</strong></td>
+<td>BBT4206</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Course Name</strong></td>
+<td>Business Intelligence II</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>Program</strong></td>
+<td>Bachelor of Business Information Technology</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Semester Duration</strong></td>
+<td>21<sup>st</sup> August 2023 to 28<sup>th</sup> November 2023</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+# Setup Chunk
+
+**Note:** the following “*KnitR*” options have been set as the defaults
+in this markdown:  
+`knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE, collapse = FALSE, tidy.opts = list(width.cutoff = 80), tidy = TRUE)`.
+
+More KnitR options are documented here
+<https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html> and
+here <https://yihui.org/knitr/options/>.
+
+``` r
+knitr::opts_chunk$set(
+    eval = TRUE,
+    echo = TRUE,
+    warning = FALSE,
+    collapse = FALSE,
+    tidy = TRUE
+)
+```
+
+------------------------------------------------------------------------
+
+**Note:** the following “*R Markdown*” options have been set as the
+defaults in this markdown:
+
+> output:
+>
+> github_document:  
+> toc: yes  
+> toc_depth: 4  
+> fig_width: 6  
+> fig_height: 4  
+> df_print: default
+>
+> editor_options:  
+> chunk_output_type: console
+
+# Step 1: Install and Load Packages
+
+We start by installing all the required packages
+
+``` r
 # STEP 1. Install and Load the Required Packages ----
 # The following packages can be installed and loaded before proceeding to the
 # subsequent steps.
@@ -140,10 +263,11 @@ if (!is.element("readr", installed.packages()[, 1])) {
                    repos = "https://cloud.r-project.org")
 }
 require("readr")
+```
 
-# STEP 2. Customize the Visualizations, Tables, and Colour Scheme ----
-# The following defines a blue-grey colour scheme for the visualizations:
-## shades of blue and shades of grey
+# Step 2: Customize the Visualizations, Tables, and Colour Scheme
+
+``` r
 blue_grey_colours_11 <- c("#27408E", "#304FAF", "#536CB5", "#6981c7", "#8da0db",
                           "#dde5ec", "#c8c9ca", "#B9BCC2", "#A7AAAF", "#888A8E",
                           "#636569")
@@ -192,158 +316,168 @@ kable_theme <- function(dat, caption) {
     kable_styling(bootstrap_options = c("striped", "condensed", "bordered"),
                   full_width = FALSE)
 }
+```
 
+# Step 3: Load Dataset and Description
 
-# STEP 3. Load the Dataset ----
-student_performance_dataset <-
-  readr::read_csv(
-    "data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.CSV", # nolint
-    col_types =
-      readr::cols(
-        class_group =
-          readr::col_factor(levels = c("A", "B", "C")),
-        gender = readr::col_factor(levels = c("1", "0")),
-        YOB = readr::col_date(format = "%Y"),
-        regret_choosing_bi =
-          readr::col_factor(levels = c("1", "0")),
-        drop_bi_now =
-          readr::col_factor(levels = c("1", "0")),
-        motivator =
-          readr::col_factor(levels = c("1", "0")),
-        read_content_before_lecture =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        anticipate_test_questions =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        answer_rhetorical_questions =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        find_terms_I_do_not_know =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        copy_new_terms_in_reading_notebook =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        take_quizzes_and_use_results =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        reorganise_course_outline =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        write_down_important_points =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        space_out_revision =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        studying_in_study_group =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        schedule_appointments =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        goal_oriented =
-          readr::col_factor(levels =
-                              c("1", "0")),
-        spaced_repetition =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        testing_and_active_recall =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        interleaving =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        categorizing =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        retrospective_timetable =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        cornell_notes =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        sq3r = readr::col_factor(levels =
-                                   c("1", "2", "3", "4")),
-        commute = readr::col_factor(levels =
-                                      c("1", "2",
-                                        "3", "4")),
-        study_time = readr::col_factor(levels =
-                                         c("1", "2",
-                                           "3", "4")),
-        repeats_since_Y1 = readr::col_integer(),
-        paid_tuition = readr::col_factor(levels =
-                                           c("0", "1")),
-        free_tuition = readr::col_factor(levels =
-                                           c("0", "1")),
-        extra_curricular = readr::col_factor(levels =
+The 20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset is then
+loaded. The dataset and its metadata are available here: <a
+href="https://drive.google.com/drive/folders/1-BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing"
+class="uri">https://drive.google.com/drive/folders/1BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing</a>
+
+    student_performance_dataset <-
+      readr::read_csv(
+        "data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.CSV", # nolint
+        col_types =
+          readr::cols(
+            class_group =
+              readr::col_factor(levels = c("A", "B", "C")),
+            gender = readr::col_factor(levels = c("1", "0")),
+            YOB = readr::col_date(format = "%Y"),
+            regret_choosing_bi =
+              readr::col_factor(levels = c("1", "0")),
+            drop_bi_now =
+              readr::col_factor(levels = c("1", "0")),
+            motivator =
+              readr::col_factor(levels = c("1", "0")),
+            read_content_before_lecture =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            anticipate_test_questions =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            answer_rhetorical_questions =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            find_terms_I_do_not_know =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            copy_new_terms_in_reading_notebook =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            take_quizzes_and_use_results =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            reorganise_course_outline =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            write_down_important_points =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            space_out_revision =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            studying_in_study_group =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            schedule_appointments =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            goal_oriented =
+              readr::col_factor(levels =
+                                  c("1", "0")),
+            spaced_repetition =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            testing_and_active_recall =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            interleaving =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            categorizing =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            retrospective_timetable =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            cornell_notes =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            sq3r = readr::col_factor(levels =
+                                       c("1", "2", "3", "4")),
+            commute = readr::col_factor(levels =
+                                          c("1", "2",
+                                            "3", "4")),
+            study_time = readr::col_factor(levels =
+                                             c("1", "2",
+                                               "3", "4")),
+            repeats_since_Y1 = readr::col_integer(),
+            paid_tuition = readr::col_factor(levels =
                                                c("0", "1")),
-        sports_extra_curricular =
-          readr::col_factor(levels = c("0", "1")),
-        exercise_per_week = readr::col_factor(levels =
-                                                c("0", "1",
-                                                  "2",
-                                                  "3")),
-        meditate = readr::col_factor(levels =
+            free_tuition = readr::col_factor(levels =
+                                               c("0", "1")),
+            extra_curricular = readr::col_factor(levels =
+                                                   c("0", "1")),
+            sports_extra_curricular =
+              readr::col_factor(levels = c("0", "1")),
+            exercise_per_week = readr::col_factor(levels =
+                                                    c("0", "1",
+                                                      "2",
+                                                      "3")),
+            meditate = readr::col_factor(levels =
+                                           c("0", "1",
+                                             "2", "3")),
+            pray = readr::col_factor(levels =
                                        c("0", "1",
                                          "2", "3")),
-        pray = readr::col_factor(levels =
-                                   c("0", "1",
-                                     "2", "3")),
-        internet = readr::col_factor(levels =
-                                       c("0", "1")),
-        laptop = readr::col_factor(levels = c("0", "1")),
-        family_relationships =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        friendships = readr::col_factor(levels =
-                                          c("1", "2", "3",
-                                            "4", "5")),
-        romantic_relationships =
-          readr::col_factor(levels =
-                              c("0", "1", "2", "3", "4")),
-        spiritual_wellnes =
-          readr::col_factor(levels = c("1", "2", "3",
-                                       "4", "5")),
-        financial_wellness =
-          readr::col_factor(levels = c("1", "2", "3",
-                                       "4", "5")),
-        health = readr::col_factor(levels = c("1", "2",
-                                              "3", "4",
-                                              "5")),
-        day_out = readr::col_factor(levels = c("0", "1",
-                                               "2", "3")),
-        night_out = readr::col_factor(levels = c("0",
-                                                 "1", "2",
-                                                 "3")),
-        alcohol_or_narcotics =
-          readr::col_factor(levels = c("0", "1", "2", "3")),
-        mentor = readr::col_factor(levels = c("0", "1")),
-        mentor_meetings = readr::col_factor(levels =
-                                              c("0", "1",
-                                                "2", "3")),
-        `Attendance Waiver Granted: 1 = Yes, 0 = No` =
-          readr::col_factor(levels = c("0", "1")),
-        GRADE = readr::col_factor(levels =
-                                    c("A", "B", "C", "D",
-                                      "E"))),
-    locale = readr::locale())
+            internet = readr::col_factor(levels =
+                                           c("0", "1")),
+            laptop = readr::col_factor(levels = c("0", "1")),
+            family_relationships =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            friendships = readr::col_factor(levels =
+                                              c("1", "2", "3",
+                                                "4", "5")),
+            romantic_relationships =
+              readr::col_factor(levels =
+                                  c("0", "1", "2", "3", "4")),
+            spiritual_wellnes =
+              readr::col_factor(levels = c("1", "2", "3",
+                                           "4", "5")),
+            financial_wellness =
+              readr::col_factor(levels = c("1", "2", "3",
+                                           "4", "5")),
+            health = readr::col_factor(levels = c("1", "2",
+                                                  "3", "4",
+                                                  "5")),
+            day_out = readr::col_factor(levels = c("0", "1",
+                                                   "2", "3")),
+            night_out = readr::col_factor(levels = c("0",
+                                                     "1", "2",
+                                                     "3")),
+            alcohol_or_narcotics =
+              readr::col_factor(levels = c("0", "1", "2", "3")),
+            mentor = readr::col_factor(levels = c("0", "1")),
+            mentor_meetings = readr::col_factor(levels =
+                                                  c("0", "1",
+                                                    "2", "3")),
+            `Attendance Waiver Granted: 1 = Yes, 0 = No` =
+              readr::col_factor(levels = c("0", "1")),
+            GRADE = readr::col_factor(levels =
+                                        c("A", "B", "C", "D",
+                                          "E"))),
+        locale = readr::locale())
 
-View(student_performance_dataset)
+    View(student_performance_dataset)
 
-# Dimensions
-dim(student_performance_dataset)
+### Dimensions
 
-# Data Types
-sapply(student_performance_dataset, class)
-glimpse(student_performance_dataset)
+    dim(student_performance_dataset)
 
-# Summary of each variable
-summary(student_performance_dataset)
+### Data Types
 
-# STEP 4. Create a subset of the data using the "dplyr" package ----
+    sapply(student_performance_dataset, class)
+    glimpse(student_performance_dataset)
 
+### Summary
+
+    summary(student_performance_dataset)
+
+# Step 4: Create a subset of the data using the “dplyr” package ----
+
+``` r
 evaluation_per_group_per_gender <- student_performance_dataset %>% # nolint
   mutate(`Student's Gender` =
            ifelse(gender == 1, "Male", "Female")) %>%
@@ -390,9 +524,14 @@ evaluation_per_group_per_gender %>%
   scale_fill_manual(values = blue_grey_colours_2) +
   ggtitle("Course Evaluation Rating per Group and per Gender") +
   labs(x = "Class Group", y = "Average Rating")
+```
 
-# STEP 5. Data Cleansing for Qualitative Data ----
-## Contractions ----
+# Step 5: Data Cleansing for Qualitative Data
+
+### Contractions
+
+``` r
+
 expand_contractions <- function(doc) {
   doc <- gsub("I'm", "I am", doc, ignore.case = TRUE)
   doc <- gsub("you're", "you are", doc, ignore.case = TRUE)
@@ -435,7 +574,11 @@ evaluation_likes_and_wishes$Wishes <- sapply(evaluation_likes_and_wishes$Wishes,
 
 # After expanding contractions
 View(evaluation_likes_and_wishes)
+```
 
+### Removing Special Characters
+
+``` r
 remove_special_characters <- function(doc) {
   gsub("[^a-zA-Z0-9 ]", "", doc, ignore.case = TRUE)
 }
@@ -458,9 +601,17 @@ View(evaluation_likes_and_wishes)
 write.csv(evaluation_likes_and_wishes,
           file = "data/evaluation_likes_and_wishes.csv",
           row.names = FALSE)
+```
 
-## Stemming/Lemmatization ----
+### Stemming/Lemmatization
 
+**Stemming:** generally refers to removing suffixes from words to get
+the common origin.
+
+**Lemmatization:** reducing inflected (or sometimes derived) words to
+their word stem, base or root form.
+
+``` r
 #install package koRpus
 install.packages("koRpus.lang.en")
 
@@ -475,14 +626,23 @@ pacman::p_load_gh("trinker/lexicon")
 #Load data
 data(student_performance_dataset)
 
-# evaluation_likes_and_wishes_stemmed <- stem_words(evaluation_likes_and_wishes)
-# View(evaluation_likes_and_wishes_stemmed)
-# 
-# evaluation_likes_and_wishes_lemmatized <- lemmatize_words(evaluation_likes_and_wishes)
-# View(evaluation_likes_and_wishes_lemmatized)
+evaluation_likes_and_wishes_stemmed <- stem_words(evaluation_likes_and_wishes)
+View(evaluation_likes_and_wishes_stemmed)
 
+evaluation_likes_and_wishes_lemmatized <- lemmatize_words(evaluation_likes_and_wishes)
+View(evaluation_likes_and_wishes_lemmatized)
+```
 
-## Tokenization & Stopwords Removal
+### Tokenization & Stopwords Removal
+
+**A stopword** is a commonly used word that is usually filtered out
+during text mining to improve the efficiency and focus of text analysis.
+
+**Tokenization** is the process of breaking out text into smaller
+meaningful units called tokens.
+
+``` r
+
 
 install.packages("tidyverse")
 install.packages("dplyr", dependencies = TRUE)
@@ -525,9 +685,11 @@ write.csv(evaluation_wishes_filtered_tokenized,
 
 View(evaluation_likes_filtered_tokenized)
 View(evaluation_wishes_filtered_tokenized)
+```
 
+# Step 6: Word Count
 
-# STEP 6. Word Count ----
+``` r
 ## Evaluation Likes ----
 ### Word count per gender ----
 word_count_per_gender_likes <- evaluation_likes_filtered_tokenized %>%
@@ -597,268 +759,89 @@ word_count_per_group_wishes %>%
   kable_styling(bootstrap_options =
                   c("striped", "condensed", "bordered"),
                 full_width = FALSE)
-# STEP 7. Top Words ----
+```
+
+# Step 7: Top Word
+
+``` r
 ## Evaluation Likes ----
-### Top 10 words for female students ----
-evaluation_likes_filtered_tokenized %>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
-  filter(`Student's Gender` == "Female") %>%
-  count(`Likes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Female
-          Students") +
-  coord_flip()
-
-### Top 10 words for male students ----
-evaluation_likes_filtered_tokenized %>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
-  filter(`Student's Gender` == "Male") %>%
-  count(`Likes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Male
-          Students") +
-  coord_flip()
-
-### Top 10 words per gender ----
-popular_words <- evaluation_likes_filtered_tokenized %>%
+### Word count per gender ----
+word_count_per_gender_likes <- evaluation_likes_filtered_tokenized %>%
   group_by(`Student's Gender`) %>%
-  count(`Likes (tokenized)`, `Student's Gender`, sort = TRUE) %>%
-  slice(seq_len(10)) %>%
-  ungroup() %>%
-  arrange(`Student's Gender`, n) %>%
-  mutate(row = row_number())
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
 
-popular_words %>%
-  ggplot(aes(row, n, fill = `Student's Gender`)) +
-  geom_col(fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  labs(x = "Word in Course Evaluation",
-       y = "Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Likes per Gender") +
-  facet_wrap(~`Student's Gender`, scales = "free") +
-  scale_x_continuous(
-    breaks = popular_words$row,
-    labels = popular_words$`Likes (tokenized)`) +
-  coord_flip()
+word_count_per_gender_likes %>%
+  mutate(num_words = color_bar("lightblue")(num_words)) %>%
+  rename(`Number of Words` = num_words) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Likes 
+                   per Gender: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
 
-### Top words for Group A students ----
-evaluation_likes_filtered_tokenized %>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
-  filter(`Class Group` == "A") %>%
-  count(`Likes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Group A
-          Students") +
-  coord_flip()
-
-### Top words for Group B students ----
-evaluation_likes_filtered_tokenized %>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
-  filter(`Class Group` == "B") %>%
-  count(`Likes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Group B
-          Students") +
-  coord_flip()
-
-### Top words for Group C students ----
-evaluation_likes_filtered_tokenized %>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
-  filter(`Class Group` == "C") %>%
-  count(`Likes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Group C
-          Students") +
-  coord_flip()
-
-### Top 10 words per group ----
-popular_words <- evaluation_likes_filtered_tokenized %>%
+### Word count per group ----
+word_count_per_group <- evaluation_likes_filtered_tokenized %>%
   group_by(`Class Group`) %>%
-  count(`Likes (tokenized)`, `Class Group`, sort = TRUE) %>%
-  slice(seq_len(10)) %>%
-  ungroup() %>%
-  arrange(`Class Group`, n) %>%
-  mutate(row = row_number())
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
 
-popular_words %>%
-  ggplot(aes(row, n, fill = `Class Group`)) +
-  geom_col(fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  labs(x = "Word in Course Evaluation", y = "Number of Times Used") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Likes per 
-          Class Group") +
-  facet_wrap(~`Class Group`, scales = "free") +
-  scale_x_continuous(
-    breaks = popular_words$row,
-    labels = popular_words$`Likes (tokenized)`) +
-  coord_flip()
+word_count_per_group %>%
+  mutate(num_words = color_bar("lightblue")(num_words)) %>%
+  rename(`Number of Words` = num_words) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Likes 
+                   per Group: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
 
 ## Evaluation Wishes ----
-### Top 10 words for female students ----
-evaluation_wishes_filtered_tokenized%>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
-  filter(`Student's Gender` == "Female") %>%
-  count(`Wishes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Female
-          Students") +
-  coord_flip()
-
-### Top 10 words for male students ----
-evaluation_wishes_filtered_tokenized %>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
-  filter(`Student's Gender` == "Male") %>%
-  count(`Wishes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Male
-          Students") +
-  coord_flip()
-
-### Top 10 words per gender ----
-popular_words <- evaluation_wishes_filtered_tokenized %>%
+### Word count per gender ----
+word_count_per_gender_wishes <- evaluation_wishes_filtered_tokenized %>%
   group_by(`Student's Gender`) %>%
-  count(`Wishes (tokenized)`, `Student's Gender`, sort = TRUE) %>%
-  slice(seq_len(10)) %>%
-  ungroup() %>%
-  arrange(`Student's Gender`, n) %>%
-  mutate(row = row_number())
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
 
-popular_words %>%
-  ggplot(aes(row, n, fill = `Student's Gender`)) +
-  geom_col(fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  labs(x = "Word in Course Evaluation", y = "Number of Times Used") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Wishes per Gender") +
-  facet_wrap(~`Student's Gender`, scales = "free") +
-  scale_x_continuous(
-    breaks = popular_words$row,
-    labels = popular_words$`Wishes (tokenized)`) +
-  coord_flip()
+word_count_per_gender_wishes %>%
+  mutate(num_words = color_bar("lightblue")(num_words)) %>%
+  rename(`Number of Words` = num_words) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Wishes 
+                   per Gender: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
 
-### Top words for Group A students ----
-evaluation_wishes_filtered_tokenized %>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
-  filter(`Class Group` == "A") %>%
-  count(`Wishes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Group A
-          Students") +
-  coord_flip()
-
-### Top words for Group B students ----
-evaluation_wishes_filtered_tokenized %>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
-  filter(`Class Group` == "B") %>%
-  count(`Wishes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Group B
-          Students") +
-  coord_flip()
-
-### Top words for Group C students ----
-evaluation_wishes_filtered_tokenized %>%
-  select(`Class Group`, `Student's Gender`,
-         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
-  filter(`Class Group` == "C") %>%
-  count(`Wishes (tokenized)`, sort = TRUE) %>%
-  top_n(9) %>%
-  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
-  ggplot() +
-  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Group C
-          Students") +
-  coord_flip()
-
-### Top 10 words per group ----
-popular_words <- evaluation_wishes_filtered_tokenized %>%
+### Word count per group ----
+word_count_per_group_wishes <- evaluation_wishes_filtered_tokenized %>%
   group_by(`Class Group`) %>%
-  count(`Wishes (tokenized)`, `Class Group`, sort = TRUE) %>%
-  slice(seq_len(10)) %>%
-  ungroup() %>%
-  arrange(`Class Group`, n) %>%
-  mutate(row = row_number())
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
 
-popular_words %>%
-  ggplot(aes(row, n, fill = `Class Group`)) +
-  geom_col(fill = blue_grey_colours_1) +
-  blue_grey_theme() +
-  labs(x = "Word in Course Evaluation",
-       y = "Number of Times Used (Term Frequency)") +
-  ggtitle("Most Frequently Used Words in Course Evaluation Wishes per 
-          Class Group") +
-  facet_wrap(~`Class Group`, scales = "free") +
-  scale_x_continuous(
-    breaks = popular_words$row,
-    labels = popular_words$`Wishes (tokenized)`) +
-  coord_flip()
+word_count_per_group_wishes %>%
+  mutate(num_words = color_bar("lightblue")(num_words)) %>%
+  rename(`Number of Words` = num_words) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Wishes 
+                   per Group: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
+```
 
-# STEP 8. Word Cloud ----
+# Step 8: Word Cloud
+
+**Word clouds** are visually appealing and can provide a quick,
+intuitive representation of the most frequently occurring words in a
+text or dataset.
+
+``` r
 ## Evaluation Likes ----
 evaluation_likes_filtered_cloud <- evaluation_likes_filtered_tokenized %>% # nolint
   count(`Likes (tokenized)`, sort = TRUE)
@@ -870,8 +853,19 @@ evaluation_wishes_filtered_cloud <- evaluation_wishes_filtered_tokenized %>% # n
   count(`Wishes (tokenized)`, sort = TRUE)
 
 wordcloud2(evaluation_wishes_filtered_cloud, size = .5)
+```
 
-# STEP 9. Term Frequency - Inverse Document Frequency (TF-IDF) ----
+# Step 9: Term Frequency - Inverse Document Frequency (TF - IDF)
+
+**TF-IDF** is used to evaluate the importance of a word in a document
+relative to a collection of documents (a collection of documents is
+called a corpus). By doing so, TF-IDF helps identify how significant a
+word is within a particular document compared to its general frequency
+in a set of documents.
+
+### Evaluation Likes
+
+``` r
 ## Evaluation Likes ----
 ### TF-IDF Score per Gender ----
 popular_tfidf_words_gender_likes <- evaluation_likes_filtered_tokenized %>% # nolint
@@ -952,8 +946,11 @@ top_popular_tfidf_words %>%
                      breaks = top_popular_tfidf_words$row,
                      labels = top_popular_tfidf_words$`Likes (tokenized)`) +
   coord_flip()
+```
 
-## Evaluation Wishes ----
+### Evaluation Wishes
+
+``` r
 ### TF-IDF Score per Gender ----
 popular_tfidf_words_gender_wishes <- evaluation_wishes_filtered_tokenized %>% # nolint
   unnest_tokens(word, `Wishes (tokenized)`) %>%
@@ -1033,3 +1030,4 @@ top_popular_tfidf_words %>%
                      breaks = top_popular_tfidf_words$row,
                      labels = top_popular_tfidf_words$`Wishes (tokenized)`) +
   coord_flip()
+```
