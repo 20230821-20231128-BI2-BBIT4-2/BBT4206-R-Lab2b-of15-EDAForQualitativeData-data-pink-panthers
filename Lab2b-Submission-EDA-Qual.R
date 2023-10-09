@@ -860,13 +860,13 @@ popular_words %>%
 
 # STEP 8. Word Cloud ----
 ## Evaluation Likes ----
-evaluation_likes_filtered_cloud <- evaluation_likes_filtered %>% # nolint
+evaluation_likes_filtered_cloud <- evaluation_likes_filtered_tokenized %>% # nolint
   count(`Likes (tokenized)`, sort = TRUE)
 
 wordcloud2(evaluation_likes_filtered_cloud, size = .5)
 
 ## Evaluation Wishes ----
-evaluation_wishes_filtered_cloud <- evaluation_wishes_filtered %>% # nolint
+evaluation_wishes_filtered_cloud <- evaluation_wishes_filtered_tokenized %>% # nolint
   count(`Wishes (tokenized)`, sort = TRUE)
 
 wordcloud2(evaluation_wishes_filtered_cloud, size = .5)
@@ -874,7 +874,7 @@ wordcloud2(evaluation_wishes_filtered_cloud, size = .5)
 # STEP 9. Term Frequency - Inverse Document Frequency (TF-IDF) ----
 ## Evaluation Likes ----
 ### TF-IDF Score per Gender ----
-popular_tfidf_words_gender_likes <- evaluation_likes_filtered %>% # nolint
+popular_tfidf_words_gender_likes <- evaluation_likes_filtered_tokenized %>% # nolint
   unnest_tokens(word, `Likes (tokenized)`) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
@@ -909,12 +909,12 @@ top_popular_tfidf_words %>%
       Class Group") +
   facet_wrap(~`Student's Gender`, scales = "free") +
   scale_x_continuous(
-    breaks = top_popular_tfidf_words$row,
-    labels = top_popular_tfidf_words$`Likes (tokenized)`) +
+                     breaks = top_popular_tfidf_words$row,
+                     labels = top_popular_tfidf_words$`Likes (tokenized)`) +
   coord_flip()
 
 ### TF-IDF Score per Group ----
-popular_tfidf_words_likes <- evaluation_likes_filtered %>% # nolint
+popular_tfidf_words_likes <- evaluation_likes_filtered_tokenized %>% # nolint
   unnest_tokens(word, `Likes (tokenized)`) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
@@ -949,13 +949,13 @@ top_popular_tfidf_words %>%
       Class Group") +
   facet_wrap(~`Class Group`, scales = "free") +
   scale_x_continuous(
-    breaks = top_popular_tfidf_words$row,
-    labels = top_popular_tfidf_words$`Likes (tokenized)`) +
+                     breaks = top_popular_tfidf_words$row,
+                     labels = top_popular_tfidf_words$`Likes (tokenized)`) +
   coord_flip()
 
 ## Evaluation Wishes ----
 ### TF-IDF Score per Gender ----
-popular_tfidf_words_gender_wishes <- evaluation_wishes_filtered %>% # nolint
+popular_tfidf_words_gender_wishes <- evaluation_wishes_filtered_tokenized %>% # nolint
   unnest_tokens(word, `Wishes (tokenized)`) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
@@ -990,12 +990,12 @@ top_popular_tfidf_words %>%
       Class Group") +
   facet_wrap(~`Student's Gender`, scales = "free") +
   scale_x_continuous(
-    breaks = top_popular_tfidf_words$row,
-    labels = top_popular_tfidf_words$`Wishes (tokenized)`) +
+                     breaks = top_popular_tfidf_words$row,
+                     labels = top_popular_tfidf_words$`Wishes (tokenized)`) +
   coord_flip()
 
 ### TF-IDF Score per Group ----
-popular_tfidf_words_likes <- evaluation_wishes_filtered %>% # nolint
+popular_tfidf_words_likes <- evaluation_wishes_filtered_tokenized %>% # nolint
   unnest_tokens(word, `Wishes (tokenized)`) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
@@ -1030,6 +1030,6 @@ top_popular_tfidf_words %>%
       Class Group") +
   facet_wrap(~`Class Group`, scales = "free") +
   scale_x_continuous(
-    breaks = top_popular_tfidf_words$row,
-    labels = top_popular_tfidf_words$`Wishes (tokenized)`) +
+                     breaks = top_popular_tfidf_words$row,
+                     labels = top_popular_tfidf_words$`Wishes (tokenized)`) +
   coord_flip()
