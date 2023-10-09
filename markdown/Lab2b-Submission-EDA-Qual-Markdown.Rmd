@@ -1,6 +1,15 @@
 ---
+output:
+  github_document: 
+    toc: yes
+    toc_depth: 4
+    fig_width: 6
+    fig_height: 4
+    df_print: default
+editor_options:
+  chunk_output_type: console
 ---
----
+
 
 # Business Intelligence Lab Submission Markdown
 
@@ -8,11 +17,7 @@
 
 -   [Student Details](#student-details)
 -   [Setup Chunk](#setup-chunk)
--   [Loading the Student Performance Dataset](#loading-the-student-performance-dataset)
-    -   [Description of the Dataset](#description-of-the-dataset)
--   [\<You can Provide Another Appropriate Title Here if you wish\>](#you-can-provide-another-appropriate-title-here-if-you-wish)
-    -   [\<You Can Have a Sub-Title Here if you wish\>](#you-can-have-a-sub-title-here-if-you-wish)
-    -   [\<You Can Have Another Sub-Title Here if you wish\>](#you-can-have-another-sub-title-here-if-you-wish)
+
 
 # Student Details {#student-details}
 
