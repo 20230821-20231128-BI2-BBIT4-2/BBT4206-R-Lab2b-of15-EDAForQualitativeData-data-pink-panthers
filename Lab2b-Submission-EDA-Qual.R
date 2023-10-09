@@ -344,45 +344,52 @@ summary(student_performance_dataset)
 
 # STEP 4. Create a subset of the data using the "dplyr" package ----
 
-learningattained_per_group_per_gender <- student_performance_dataset %>% # nolint
+evaluation_per_group_per_gender <- student_performance_dataset %>% # nolint
   mutate(`Student's Gender` =
            ifelse(gender == 1, "Male", "Female")) %>%
   select(class_group, gender,
-         `Student's Gender`, `Average Level of Learning Attained Rating`) %>%
-  filter(!is.na(`Average Level of Learning Attained Rating`)) %>%
+         `Student's Gender`, `Average Course Evaluation Rating`) %>%
+  filter(!is.na(`Average Course Evaluation Rating`)) %>%
   group_by(class_group, `Student's Gender`) %>%
-  summarise(average_learning_rating =
-              mean(`Average Level of Learning Attained Rating`)) %>%
-  arrange(desc(average_learning_rating), .by_group = TRUE)
+  summarise(average_evaluation_rating =
+              mean(`Average Course Evaluation Rating`)) %>%
+  arrange(desc(average_evaluation_rating), .by_group = TRUE)
 
 # Plain tabular output
-View(learningattained_per_group_per_gender)
+View(evaluation_per_group_per_gender)
 
-learningattained_per_group_per_gender %>%
+# Decorated tabular output
+library(kableExtra)
+library(knitr)
+library(dplyr)
+
+remotes::install_github("renkun-ken/formattable")
+
+evaluation_per_group_per_gender %>%
   rename(`Class Group` = class_group) %>%
-  rename(`Average Level of Learning Attained Rating` = average_learning_rating) %>%
+  rename(`Average Course Evaluation Rating` = average_evaluation_rating) %>%
   select(`Class Group`, `Student's Gender`,
-         `Average Level of Learning Attained Rating`) %>%
-  mutate(`Average Level of Learning Attained Rating` =
+         `Average Course Evaluation Rating`) %>%
+  mutate(`Average Course Evaluation Rating` =
            color_tile("#B9BCC2", "#536CB5")
-         (`Average Level of Learning Attained Rating`)) %>%
+         (`Average Course Evaluation Rating`)) %>%
   kable("html", escape = FALSE, align = "c",
-        caption = "Level of Learning Attained per Group and per Gender") %>%
+        caption = "Course Evaluation Rating per Group and per Gender") %>%
   kable_styling(bootstrap_options =
                   c("striped", "condensed", "bordered"),
                 full_width = FALSE)
 
 # Decorated visual bar chart
-learningattained_per_group_per_gender %>%
+evaluation_per_group_per_gender %>%
   ggplot() +
-  geom_bar(aes(x = class_group, y = average_learning_rating,
+  geom_bar(aes(x = class_group, y = average_evaluation_rating,
                fill = `Student's Gender`),
            stat = "identity", position = "dodge") +
   expand_limits(y = 0) +
   blue_grey_theme() +
   scale_fill_manual(values = blue_grey_colours_2) +
-  ggtitle("Level of Learning Attained per Group and per Gender") +
-  labs(x = "Class Group", y = "Average Level")
+  ggtitle("Course Evaluation Rating per Group and per Gender") +
+  labs(x = "Class Group", y = "Average Rating")
 
 # STEP 5. Data Cleansing for Qualitative Data ----
 ## Contractions ----
@@ -412,7 +419,7 @@ evaluation_likes_and_wishes <- student_performance_dataset %>%
   mutate(`Student's Gender` =
            ifelse(gender == 1, "Male", "Female")) %>%
   rename(`Class Group` = class_group) %>%
-  rename(Likes = `D - 1. write two things you like about the teaching and learning in this unit so far`) %>% # nolint
+  rename(Likes = `D - 1. Write two things you like about the teaching and learning in this unit so far.`) %>% # nolint
   rename(Wishes = `D - 2. Write at least one recommendation to improve the teaching and learning in this unit (for the remaining weeks in the semester)`) %>% # nolint
   select(`Class Group`,
          `Student's Gender`, `Average Course Evaluation Rating`,
@@ -468,11 +475,11 @@ pacman::p_load_gh("trinker/lexicon")
 #Load data
 data(student_performance_dataset)
 
-evaluation_likes_and_wishes_stemmed <- stem_words(evaluation_likes_and_wishes)
-View(evaluation_likes_and_wishes_stemmed)
-
-evaluation_likes_and_wishes_lemmatized <- lemmatize_words(evaluation_likes_and_wishes)
-View(evaluation_likes_and_wishes_lemmatized)
+# evaluation_likes_and_wishes_stemmed <- stem_words(evaluation_likes_and_wishes)
+# View(evaluation_likes_and_wishes_stemmed)
+# 
+# evaluation_likes_and_wishes_lemmatized <- lemmatize_words(evaluation_likes_and_wishes)
+# View(evaluation_likes_and_wishes_lemmatized)
 
 
 ## Tokenization & Stopwords Removal
@@ -518,3 +525,511 @@ write.csv(evaluation_wishes_filtered_tokenized,
 
 View(evaluation_likes_filtered_tokenized)
 View(evaluation_wishes_filtered_tokenized)
+
+
+# STEP 6. Word Count ----
+## Evaluation Likes ----
+### Word count per gender ----
+word_count_per_gender_likes <- evaluation_likes_filtered_tokenized %>%
+  group_by(`Student's Gender`) %>%
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
+
+word_count_per_gender_likes %>%
+  mutate(num_words = color_bar("lightblue")(num_words)) %>%
+  rename(`Number of Words` = num_words) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Likes 
+                   per Gender: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
+
+### Word count per group ----
+word_count_per_group <- evaluation_likes_filtered_tokenized %>%
+  group_by(`Class Group`) %>%
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
+
+word_count_per_group %>%
+  mutate(num_words = color_bar("lightblue")(num_words)) %>%
+  rename(`Number of Words` = num_words) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Likes 
+                   per Group: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
+
+## Evaluation Wishes ----
+### Word count per gender ----
+word_count_per_gender_wishes <- evaluation_wishes_filtered_tokenized %>%
+  group_by(`Student's Gender`) %>%
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
+
+word_count_per_gender_wishes %>%
+  mutate(num_words = color_bar("lightblue")(num_words)) %>%
+  rename(`Number of Words` = num_words) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Wishes 
+                   per Gender: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
+
+### Word count per group ----
+word_count_per_group_wishes <- evaluation_wishes_filtered_tokenized %>%
+  group_by(`Class Group`) %>%
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
+
+word_count_per_group_wishes %>%
+  mutate(num_words = color_bar("lightblue")(num_words)) %>%
+  rename(`Number of Words` = num_words) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Wishes 
+                   per Group: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
+# STEP 7. Top Words ----
+## Evaluation Likes ----
+### Top 10 words for female students ----
+evaluation_likes_filtered_tokenized %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
+  filter(`Student's Gender` == "Female") %>%
+  count(`Likes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Female
+          Students") +
+  coord_flip()
+
+### Top 10 words for male students ----
+evaluation_likes_filtered_tokenized %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
+  filter(`Student's Gender` == "Male") %>%
+  count(`Likes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Male
+          Students") +
+  coord_flip()
+
+### Top 10 words per gender ----
+popular_words <- evaluation_likes_filtered_tokenized %>%
+  group_by(`Student's Gender`) %>%
+  count(`Likes (tokenized)`, `Student's Gender`, sort = TRUE) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Student's Gender`, n) %>%
+  mutate(row = row_number())
+
+popular_words %>%
+  ggplot(aes(row, n, fill = `Student's Gender`)) +
+  geom_col(fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  labs(x = "Word in Course Evaluation",
+       y = "Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Likes per Gender") +
+  facet_wrap(~`Student's Gender`, scales = "free") +
+  scale_x_continuous(
+    breaks = popular_words$row,
+    labels = popular_words$`Likes (tokenized)`) +
+  coord_flip()
+
+### Top words for Group A students ----
+evaluation_likes_filtered_tokenized %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
+  filter(`Class Group` == "A") %>%
+  count(`Likes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Group A
+          Students") +
+  coord_flip()
+
+### Top words for Group B students ----
+evaluation_likes_filtered_tokenized %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
+  filter(`Class Group` == "B") %>%
+  count(`Likes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Group B
+          Students") +
+  coord_flip()
+
+### Top words for Group C students ----
+evaluation_likes_filtered_tokenized %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
+  filter(`Class Group` == "C") %>%
+  count(`Likes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Likes (tokenized)` = reorder(`Likes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Likes for Group C
+          Students") +
+  coord_flip()
+
+### Top 10 words per group ----
+popular_words <- evaluation_likes_filtered_tokenized %>%
+  group_by(`Class Group`) %>%
+  count(`Likes (tokenized)`, `Class Group`, sort = TRUE) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Class Group`, n) %>%
+  mutate(row = row_number())
+
+popular_words %>%
+  ggplot(aes(row, n, fill = `Class Group`)) +
+  geom_col(fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  labs(x = "Word in Course Evaluation", y = "Number of Times Used") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Likes per 
+          Class Group") +
+  facet_wrap(~`Class Group`, scales = "free") +
+  scale_x_continuous(
+    breaks = popular_words$row,
+    labels = popular_words$`Likes (tokenized)`) +
+  coord_flip()
+
+## Evaluation Wishes ----
+### Top 10 words for female students ----
+evaluation_wishes_filtered_tokenized%>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
+  filter(`Student's Gender` == "Female") %>%
+  count(`Wishes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Female
+          Students") +
+  coord_flip()
+
+### Top 10 words for male students ----
+evaluation_wishes_filtered_tokenized %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
+  filter(`Student's Gender` == "Male") %>%
+  count(`Wishes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Male
+          Students") +
+  coord_flip()
+
+### Top 10 words per gender ----
+popular_words <- evaluation_wishes_filtered_tokenized %>%
+  group_by(`Student's Gender`) %>%
+  count(`Wishes (tokenized)`, `Student's Gender`, sort = TRUE) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Student's Gender`, n) %>%
+  mutate(row = row_number())
+
+popular_words %>%
+  ggplot(aes(row, n, fill = `Student's Gender`)) +
+  geom_col(fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  labs(x = "Word in Course Evaluation", y = "Number of Times Used") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Wishes per Gender") +
+  facet_wrap(~`Student's Gender`, scales = "free") +
+  scale_x_continuous(
+    breaks = popular_words$row,
+    labels = popular_words$`Wishes (tokenized)`) +
+  coord_flip()
+
+### Top words for Group A students ----
+evaluation_wishes_filtered_tokenized %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
+  filter(`Class Group` == "A") %>%
+  count(`Wishes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Group A
+          Students") +
+  coord_flip()
+
+### Top words for Group B students ----
+evaluation_wishes_filtered_tokenized %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
+  filter(`Class Group` == "B") %>%
+  count(`Wishes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Group B
+          Students") +
+  coord_flip()
+
+### Top words for Group C students ----
+evaluation_wishes_filtered_tokenized %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
+  filter(`Class Group` == "C") %>%
+  count(`Wishes (tokenized)`, sort = TRUE) %>%
+  top_n(9) %>%
+  mutate(`Wishes (tokenized)` = reorder(`Wishes (tokenized)`, n)) %>%
+  ggplot() +
+  geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  xlab("Word in Course Evaluation") +
+  ylab("Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Group C
+          Students") +
+  coord_flip()
+
+### Top 10 words per group ----
+popular_words <- evaluation_wishes_filtered_tokenized %>%
+  group_by(`Class Group`) %>%
+  count(`Wishes (tokenized)`, `Class Group`, sort = TRUE) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Class Group`, n) %>%
+  mutate(row = row_number())
+
+popular_words %>%
+  ggplot(aes(row, n, fill = `Class Group`)) +
+  geom_col(fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  labs(x = "Word in Course Evaluation",
+       y = "Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Wishes per 
+          Class Group") +
+  facet_wrap(~`Class Group`, scales = "free") +
+  scale_x_continuous(
+    breaks = popular_words$row,
+    labels = popular_words$`Wishes (tokenized)`) +
+  coord_flip()
+
+# STEP 8. Word Cloud ----
+## Evaluation Likes ----
+evaluation_likes_filtered_cloud <- evaluation_likes_filtered %>% # nolint
+  count(`Likes (tokenized)`, sort = TRUE)
+
+wordcloud2(evaluation_likes_filtered_cloud, size = .5)
+
+## Evaluation Wishes ----
+evaluation_wishes_filtered_cloud <- evaluation_wishes_filtered %>% # nolint
+  count(`Wishes (tokenized)`, sort = TRUE)
+
+wordcloud2(evaluation_wishes_filtered_cloud, size = .5)
+
+# STEP 9. Term Frequency - Inverse Document Frequency (TF-IDF) ----
+## Evaluation Likes ----
+### TF-IDF Score per Gender ----
+popular_tfidf_words_gender_likes <- evaluation_likes_filtered %>% # nolint
+  unnest_tokens(word, `Likes (tokenized)`) %>%
+  distinct() %>%
+  filter(!word %in% undesirable_words) %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Likes (tokenized)` = word) %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
+  count(`Student's Gender`, `Likes (tokenized)`, sort = TRUE) %>%
+  ungroup() %>%
+  bind_tf_idf(`Likes (tokenized)`, `Student's Gender`, n)
+
+head(popular_tfidf_words_gender_likes)
+
+top_popular_tfidf_words <- popular_tfidf_words_gender_likes %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(`Likes (tokenized)` =
+           factor(`Likes (tokenized)`,
+                  levels = rev(unique(`Likes (tokenized)`)))) %>%
+  group_by(`Student's Gender`) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Student's Gender`, tf_idf) %>%
+  mutate(row = row_number())
+
+top_popular_tfidf_words %>%
+  ggplot(aes(x = row, tf_idf, fill = `Student's Gender`)) +
+  geom_col(fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  labs(x = "Word in Course Evaluation", y = "TF-IDF Score") +
+  ggtitle("Important Words using TF-IDF by Chart Level") +
+  ggtitle("Most Important Words by TF-IDF Score in Course Evaluation Likes per 
+      Class Group") +
+  facet_wrap(~`Student's Gender`, scales = "free") +
+  scale_x_continuous(
+    breaks = top_popular_tfidf_words$row,
+    labels = top_popular_tfidf_words$`Likes (tokenized)`) +
+  coord_flip()
+
+### TF-IDF Score per Group ----
+popular_tfidf_words_likes <- evaluation_likes_filtered %>% # nolint
+  unnest_tokens(word, `Likes (tokenized)`) %>%
+  distinct() %>%
+  filter(!word %in% undesirable_words) %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Likes (tokenized)` = word) %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
+  count(`Class Group`, `Likes (tokenized)`, sort = TRUE) %>%
+  ungroup() %>%
+  bind_tf_idf(`Likes (tokenized)`, `Class Group`, n)
+
+head(popular_tfidf_words_likes)
+
+top_popular_tfidf_words <- popular_tfidf_words_likes %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(`Likes (tokenized)` =
+           factor(`Likes (tokenized)`,
+                  levels = rev(unique(`Likes (tokenized)`)))) %>%
+  group_by(`Class Group`) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Class Group`, tf_idf) %>%
+  mutate(row = row_number())
+
+top_popular_tfidf_words %>%
+  ggplot(aes(x = row, tf_idf, fill = `Class Group`)) +
+  geom_col(fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  labs(x = "Word in Course Evaluation", y = "TF-IDF Score") +
+  ggtitle("Important Words using TF-IDF by Chart Level") +
+  ggtitle("Most Important Words by TF-IDF Score in Course Evaluation Likes per 
+      Class Group") +
+  facet_wrap(~`Class Group`, scales = "free") +
+  scale_x_continuous(
+    breaks = top_popular_tfidf_words$row,
+    labels = top_popular_tfidf_words$`Likes (tokenized)`) +
+  coord_flip()
+
+## Evaluation Wishes ----
+### TF-IDF Score per Gender ----
+popular_tfidf_words_gender_wishes <- evaluation_wishes_filtered %>% # nolint
+  unnest_tokens(word, `Wishes (tokenized)`) %>%
+  distinct() %>%
+  filter(!word %in% undesirable_words) %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Wishes (tokenized)` = word) %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
+  count(`Student's Gender`, `Wishes (tokenized)`, sort = TRUE) %>%
+  ungroup() %>%
+  bind_tf_idf(`Wishes (tokenized)`, `Student's Gender`, n)
+
+head(popular_tfidf_words_gender_wishes)
+
+top_popular_tfidf_words <- popular_tfidf_words_gender_wishes %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(`Wishes (tokenized)` =
+           factor(`Wishes (tokenized)`,
+                  levels = rev(unique(`Wishes (tokenized)`)))) %>%
+  group_by(`Student's Gender`) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Student's Gender`, tf_idf) %>%
+  mutate(row = row_number())
+
+top_popular_tfidf_words %>%
+  ggplot(aes(x = row, tf_idf, fill = `Student's Gender`)) +
+  geom_col(fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  labs(x = "Word in Course Evaluation", y = "TF-IDF Score") +
+  ggtitle("Important Words using TF-IDF by Chart Level") +
+  ggtitle("Most Important Words by TF-IDF Score in Course Evaluation Wishes per 
+      Class Group") +
+  facet_wrap(~`Student's Gender`, scales = "free") +
+  scale_x_continuous(
+    breaks = top_popular_tfidf_words$row,
+    labels = top_popular_tfidf_words$`Wishes (tokenized)`) +
+  coord_flip()
+
+### TF-IDF Score per Group ----
+popular_tfidf_words_likes <- evaluation_wishes_filtered %>% # nolint
+  unnest_tokens(word, `Wishes (tokenized)`) %>%
+  distinct() %>%
+  filter(!word %in% undesirable_words) %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Wishes (tokenized)` = word) %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
+  count(`Class Group`, `Wishes (tokenized)`, sort = TRUE) %>%
+  ungroup() %>%
+  bind_tf_idf(`Wishes (tokenized)`, `Class Group`, n)
+
+head(popular_tfidf_words_likes)
+
+top_popular_tfidf_words <- popular_tfidf_words_likes %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(`Wishes (tokenized)` =
+           factor(`Wishes (tokenized)`,
+                  levels = rev(unique(`Wishes (tokenized)`)))) %>%
+  group_by(`Class Group`) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Class Group`, tf_idf) %>%
+  mutate(row = row_number())
+
+top_popular_tfidf_words %>%
+  ggplot(aes(x = row, tf_idf, fill = `Class Group`)) +
+  geom_col(fill = blue_grey_colours_1) +
+  blue_grey_theme() +
+  labs(x = "Word in Course Evaluation", y = "TF-IDF Score") +
+  ggtitle("Important Words using TF-IDF by Chart Level") +
+  ggtitle("Most Important Words by TF-IDF Score in Course Evaluation Wishes per 
+      Class Group") +
+  facet_wrap(~`Class Group`, scales = "free") +
+  scale_x_continuous(
+    breaks = top_popular_tfidf_words$row,
+    labels = top_popular_tfidf_words$`Wishes (tokenized)`) +
+  coord_flip()
