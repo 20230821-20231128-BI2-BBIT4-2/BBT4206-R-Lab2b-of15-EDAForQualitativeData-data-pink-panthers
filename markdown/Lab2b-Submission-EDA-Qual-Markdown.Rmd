@@ -1,4 +1,6 @@
 ---
+title: "Business Intelligence Project"
+
 output:
   github_document: 
     toc: yes
@@ -15,8 +17,6 @@ editor_options:
 
 <Data Pink Panthers> \<9/10/23\>
 
--   [Student Details](#student-details)
--   [Setup Chunk](#setup-chunk)
 
 
 # Student Details {#student-details}
