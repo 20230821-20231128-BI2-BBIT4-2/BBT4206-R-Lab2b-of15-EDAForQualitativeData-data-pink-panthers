@@ -1,83 +1,88 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
+Business Intelligence Project
+================
 
--   [Business Intelligence Lab Submission
-    Markdown](#business-intelligence-lab-submission-markdown)
--   [Student Details](#student-details)
--   [Setup Chunk](#setup-chunk)
--   [Step 1: Install and Load
-    Packages](#step-1-install-and-load-packages)
--   [Step 2: Customize the Visualizations, Tables, and Colour
-    Scheme](#sec-step-2-customize-the-visualizations-tables-and-colour-scheme)
--   [Step 3: Load Dataset and
-    Description](#sec-step-3-load-dataset-and-description)
-    -   [Dimensions](#dimensions)
-    -   [Data Types](#data-types)
-    -   [Summary](#summary)
--   [Step 4: Create a subset of the data using the "dplyr" package
-    ----](#step-4-create-a-subset-of-the-data-using-the-dplyr-package-----)
--   [Step 5: Data Cleansing for Qualitative
-    Data](#step-5-data-cleansing-for-qualitative-data)
-    -   [Contractions](#contractions)
-    -   [Removing Special Characters](#removing-special-characters)
-    -   [Stemming/Lemmatization](#stemminglemmatization)
-    -   [Tokenization & Stopwords
-        Removal](#tokenization--stopwords-removal)
--   [Step 6: Word Count](#sec-step-6-)
--   [Step 7: Top Word](#step-7-top-word)
--   [Step 8: Word Cloud](#step-8-word-cloud)
--   [Step 9: Term Frequency - Inverse Document Frequency (TF -
-    IDF)](#step-9-term-frequency---inverse-document-frequency-tf---idf)
-    -   [Evaluation Likes](#evaluation-likes)
-    -   [Evaluation Wishes](#evaluation-wishes)
+- [Business Intelligence Lab Submission
+  Markdown](#business-intelligence-lab-submission-markdown)
+- [Student Details](#student-details)
+- [Setup Chunk](#setup-chunk)
+- [Step 1: Install and Load Packages](#step-1-install-and-load-packages)
+- [Step 2: Customize the Visualizations, Tables, and Colour
+  Scheme](#sec-step-2-customize-the-visualizations-tables-and-colour-scheme)
+- [Step 3: Load Dataset and
+  Description](#sec-step-3-load-dataset-and-description)
+  - [Dimensions](#dimensions)
+  - [Data Types](#data-types)
+  - [Summary](#summary)
+- [Step 4: Create a subset of the data using the “dplyr” package
+  ----](#step-4-create-a-subset-of-the-data-using-the-dplyr-package-----)
+- [Step 5: Data Cleansing for Qualitative
+  Data](#step-5-data-cleansing-for-qualitative-data)
+  - [Contractions](#contractions)
+  - [Removing Special Characters](#removing-special-characters)
+  - [Stemming/Lemmatization](#stemminglemmatization)
+  - [Tokenization & Stopwords Removal](#tokenization--stopwords-removal)
+- [Step 6: Word Count](#sec-step-6-)
+- [Step 7: Top Word](#step-7-top-word)
+- [Step 8: Word Cloud](#step-8-word-cloud)
+- [Step 9: Term Frequency - Inverse Document Frequency (TF -
+  IDF)](#step-9-term-frequency---inverse-document-frequency-tf---idf)
+  - [Evaluation Likes](#evaluation-likes)
+  - [Evaluation Wishes](#evaluation-wishes)
 
-# Business Intelligence Lab Submission Markdown {#business-intelligence-lab-submission-markdown}
+# Business Intelligence Lab Submission Markdown
 
 <Data Pink Panthers> \<9/10/23\>
 
--   [Student Details](#student-details)
--   [Setup Chunk](#setup-chunk)
+# Student Details
 
-# Student Details {#student-details}
+<table style="width:99%;">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 38%" />
+<col style="width: 17%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Student ID Numbers and Names of Group Members</strong></td>
+<td><p>| 1. 137315 - C - Yashvi Bhadania</p>
+<p>| 2. 134668 - C - June Ndinda Mutiso</p>
+<p>| 3. 135227 - C - Innocent Mbuvi</p>
+<p>| 4. 134253 - C - Uzair Farooq</p>
+<p>| 5. 135109 - C - Jackson Kaburu</p></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td><strong>GitHub Classroom Group Name</strong></td>
+<td>Data Pink Panthers</td>
+</tr>
+<tr class="odd">
+<td><strong>Course Code</strong></td>
+<td>BBT4206</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Course Name</strong></td>
+<td>Business Intelligence II</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>Program</strong></td>
+<td>Bachelor of Business Information Technology</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Semester Duration</strong></td>
+<td>21<sup>st</sup> August 2023 to 28<sup>th</sup> November 2023</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
-+---------------------------+------------------------+---------------+
-| **Student ID Numbers and  | \| 1. 137315 - C -     |               |
-| Names of Group Members**  | Yashvi Bhadania        |               |
-|                           |                        |               |
-|                           | \| 2. 134668 - C -     |               |
-|                           | June Ndinda Mutiso     |               |
-|                           |                        |               |
-|                           | \| 3. 135227 - C -     |               |
-|                           | Innocent Mbuvi         |               |
-|                           |                        |               |
-|                           | \| 4. 134253 - C -     |               |
-|                           | Uzair Farooq           |               |
-|                           |                        |               |
-|                           | \| 5. 135109 - C -     |               |
-|                           | Jackson Kaburu         |               |
-+---------------------------+------------------------+---------------+
-|                           | **GitHub Classroom     | Data Pink     |
-|                           | Group Name**           | Panthers      |
-+---------------------------+------------------------+---------------+
-| **Course Code**           | BBT4206                |               |
-+---------------------------+------------------------+---------------+
-| **Course Name**           | Business Intelligence  |               |
-|                           | II                     |               |
-+---------------------------+------------------------+---------------+
-| **Program**               | Bachelor of Business   |               |
-|                           | Information Technology |               |
-+---------------------------+------------------------+---------------+
-| **Semester Duration**     | 21^st^ August 2023 to  |               |
-|                           | 28^th^ November 2023   |               |
-+---------------------------+------------------------+---------------+
+# Setup Chunk
 
-# Setup Chunk {#setup-chunk}
-
-**Note:** the following "*KnitR*" options have been set as the defaults
-in this markdown:\
+**Note:** the following “*KnitR*” options have been set as the defaults
+in this markdown:  
 `knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE, collapse = FALSE, tidy.opts = list(width.cutoff = 80), tidy = TRUE)`.
 
 More KnitR options are documented here
@@ -96,22 +101,22 @@ knitr::opts_chunk$set(
 
 ------------------------------------------------------------------------
 
-**Note:** the following "*R Markdown*" options have been set as the
+**Note:** the following “*R Markdown*” options have been set as the
 defaults in this markdown:
 
 > output:
 >
-> github_document:\
-> toc: yes\
-> toc_depth: 4\
-> fig_width: 6\
-> fig_height: 4\
+> github_document:  
+> toc: yes  
+> toc_depth: 4  
+> fig_width: 6  
+> fig_height: 4  
 > df_print: default
 >
-> editor_options:\
+> editor_options:  
 > chunk_output_type: console
 
-# Step 1: Install and Load Packages {#step-1-install-and-load-packages}
+# Step 1: Install and Load Packages
 
 We start by installing all the required packages
 
@@ -320,165 +325,157 @@ loaded. The dataset and its metadata are available here: <a
 href="https://drive.google.com/drive/folders/1-BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing"
 class="uri">https://drive.google.com/drive/folders/1BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing</a>
 
-```         
-student_performance_dataset <-
-  readr::read_csv(
-    "data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.CSV", # nolint
-    col_types =
-      readr::cols(
-        class_group =
-          readr::col_factor(levels = c("A", "B", "C")),
-        gender = readr::col_factor(levels = c("1", "0")),
-        YOB = readr::col_date(format = "%Y"),
-        regret_choosing_bi =
-          readr::col_factor(levels = c("1", "0")),
-        drop_bi_now =
-          readr::col_factor(levels = c("1", "0")),
-        motivator =
-          readr::col_factor(levels = c("1", "0")),
-        read_content_before_lecture =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        anticipate_test_questions =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        answer_rhetorical_questions =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        find_terms_I_do_not_know =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        copy_new_terms_in_reading_notebook =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        take_quizzes_and_use_results =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        reorganise_course_outline =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        write_down_important_points =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        space_out_revision =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        studying_in_study_group =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        schedule_appointments =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        goal_oriented =
-          readr::col_factor(levels =
-                              c("1", "0")),
-        spaced_repetition =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        testing_and_active_recall =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        interleaving =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        categorizing =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        retrospective_timetable =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        cornell_notes =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4")),
-        sq3r = readr::col_factor(levels =
-                                   c("1", "2", "3", "4")),
-        commute = readr::col_factor(levels =
-                                      c("1", "2",
-                                        "3", "4")),
-        study_time = readr::col_factor(levels =
-                                         c("1", "2",
-                                           "3", "4")),
-        repeats_since_Y1 = readr::col_integer(),
-        paid_tuition = readr::col_factor(levels =
-                                           c("0", "1")),
-        free_tuition = readr::col_factor(levels =
-                                           c("0", "1")),
-        extra_curricular = readr::col_factor(levels =
+    student_performance_dataset <-
+      readr::read_csv(
+        "data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.CSV", # nolint
+        col_types =
+          readr::cols(
+            class_group =
+              readr::col_factor(levels = c("A", "B", "C")),
+            gender = readr::col_factor(levels = c("1", "0")),
+            YOB = readr::col_date(format = "%Y"),
+            regret_choosing_bi =
+              readr::col_factor(levels = c("1", "0")),
+            drop_bi_now =
+              readr::col_factor(levels = c("1", "0")),
+            motivator =
+              readr::col_factor(levels = c("1", "0")),
+            read_content_before_lecture =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            anticipate_test_questions =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            answer_rhetorical_questions =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            find_terms_I_do_not_know =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            copy_new_terms_in_reading_notebook =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            take_quizzes_and_use_results =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            reorganise_course_outline =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            write_down_important_points =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            space_out_revision =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            studying_in_study_group =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            schedule_appointments =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            goal_oriented =
+              readr::col_factor(levels =
+                                  c("1", "0")),
+            spaced_repetition =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            testing_and_active_recall =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            interleaving =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            categorizing =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            retrospective_timetable =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            cornell_notes =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4")),
+            sq3r = readr::col_factor(levels =
+                                       c("1", "2", "3", "4")),
+            commute = readr::col_factor(levels =
+                                          c("1", "2",
+                                            "3", "4")),
+            study_time = readr::col_factor(levels =
+                                             c("1", "2",
+                                               "3", "4")),
+            repeats_since_Y1 = readr::col_integer(),
+            paid_tuition = readr::col_factor(levels =
                                                c("0", "1")),
-        sports_extra_curricular =
-          readr::col_factor(levels = c("0", "1")),
-        exercise_per_week = readr::col_factor(levels =
-                                                c("0", "1",
-                                                  "2",
-                                                  "3")),
-        meditate = readr::col_factor(levels =
+            free_tuition = readr::col_factor(levels =
+                                               c("0", "1")),
+            extra_curricular = readr::col_factor(levels =
+                                                   c("0", "1")),
+            sports_extra_curricular =
+              readr::col_factor(levels = c("0", "1")),
+            exercise_per_week = readr::col_factor(levels =
+                                                    c("0", "1",
+                                                      "2",
+                                                      "3")),
+            meditate = readr::col_factor(levels =
+                                           c("0", "1",
+                                             "2", "3")),
+            pray = readr::col_factor(levels =
                                        c("0", "1",
                                          "2", "3")),
-        pray = readr::col_factor(levels =
-                                   c("0", "1",
-                                     "2", "3")),
-        internet = readr::col_factor(levels =
-                                       c("0", "1")),
-        laptop = readr::col_factor(levels = c("0", "1")),
-        family_relationships =
-          readr::col_factor(levels =
-                              c("1", "2", "3", "4", "5")),
-        friendships = readr::col_factor(levels =
-                                          c("1", "2", "3",
-                                            "4", "5")),
-        romantic_relationships =
-          readr::col_factor(levels =
-                              c("0", "1", "2", "3", "4")),
-        spiritual_wellnes =
-          readr::col_factor(levels = c("1", "2", "3",
-                                       "4", "5")),
-        financial_wellness =
-          readr::col_factor(levels = c("1", "2", "3",
-                                       "4", "5")),
-        health = readr::col_factor(levels = c("1", "2",
-                                              "3", "4",
-                                              "5")),
-        day_out = readr::col_factor(levels = c("0", "1",
-                                               "2", "3")),
-        night_out = readr::col_factor(levels = c("0",
-                                                 "1", "2",
-                                                 "3")),
-        alcohol_or_narcotics =
-          readr::col_factor(levels = c("0", "1", "2", "3")),
-        mentor = readr::col_factor(levels = c("0", "1")),
-        mentor_meetings = readr::col_factor(levels =
-                                              c("0", "1",
-                                                "2", "3")),
-        `Attendance Waiver Granted: 1 = Yes, 0 = No` =
-          readr::col_factor(levels = c("0", "1")),
-        GRADE = readr::col_factor(levels =
-                                    c("A", "B", "C", "D",
-                                      "E"))),
-    locale = readr::locale())
+            internet = readr::col_factor(levels =
+                                           c("0", "1")),
+            laptop = readr::col_factor(levels = c("0", "1")),
+            family_relationships =
+              readr::col_factor(levels =
+                                  c("1", "2", "3", "4", "5")),
+            friendships = readr::col_factor(levels =
+                                              c("1", "2", "3",
+                                                "4", "5")),
+            romantic_relationships =
+              readr::col_factor(levels =
+                                  c("0", "1", "2", "3", "4")),
+            spiritual_wellnes =
+              readr::col_factor(levels = c("1", "2", "3",
+                                           "4", "5")),
+            financial_wellness =
+              readr::col_factor(levels = c("1", "2", "3",
+                                           "4", "5")),
+            health = readr::col_factor(levels = c("1", "2",
+                                                  "3", "4",
+                                                  "5")),
+            day_out = readr::col_factor(levels = c("0", "1",
+                                                   "2", "3")),
+            night_out = readr::col_factor(levels = c("0",
+                                                     "1", "2",
+                                                     "3")),
+            alcohol_or_narcotics =
+              readr::col_factor(levels = c("0", "1", "2", "3")),
+            mentor = readr::col_factor(levels = c("0", "1")),
+            mentor_meetings = readr::col_factor(levels =
+                                                  c("0", "1",
+                                                    "2", "3")),
+            `Attendance Waiver Granted: 1 = Yes, 0 = No` =
+              readr::col_factor(levels = c("0", "1")),
+            GRADE = readr::col_factor(levels =
+                                        c("A", "B", "C", "D",
+                                          "E"))),
+        locale = readr::locale())
 
-View(student_performance_dataset)
-```
+    View(student_performance_dataset)
 
-### Dimensions {#dimensions}
+### Dimensions
 
-```         
-dim(student_performance_dataset)
-```
+    dim(student_performance_dataset)
 
-### Data Types {#data-types}
+### Data Types
 
-```         
-sapply(student_performance_dataset, class)
-glimpse(student_performance_dataset)
-```
+    sapply(student_performance_dataset, class)
+    glimpse(student_performance_dataset)
 
-### Summary {#summary}
+### Summary
 
-```         
-summary(student_performance_dataset)
-```
+    summary(student_performance_dataset)
 
-# Step 4: Create a subset of the data using the "dplyr" package ----
+# Step 4: Create a subset of the data using the “dplyr” package ----
 
 ``` r
 evaluation_per_group_per_gender <- student_performance_dataset %>% # nolint
@@ -529,9 +526,9 @@ evaluation_per_group_per_gender %>%
   labs(x = "Class Group", y = "Average Rating")
 ```
 
-# Step 5: Data Cleansing for Qualitative Data {#step-5-data-cleansing-for-qualitative-data}
+# Step 5: Data Cleansing for Qualitative Data
 
-### Contractions {#contractions}
+### Contractions
 
 ``` r
 
@@ -579,7 +576,7 @@ evaluation_likes_and_wishes$Wishes <- sapply(evaluation_likes_and_wishes$Wishes,
 View(evaluation_likes_and_wishes)
 ```
 
-### Removing Special Characters {#removing-special-characters}
+### Removing Special Characters
 
 ``` r
 remove_special_characters <- function(doc) {
@@ -606,7 +603,7 @@ write.csv(evaluation_likes_and_wishes,
           row.names = FALSE)
 ```
 
-### Stemming/Lemmatization {#stemminglemmatization}
+### Stemming/Lemmatization
 
 **Stemming:** generally refers to removing suffixes from words to get
 the common origin.
@@ -764,7 +761,7 @@ word_count_per_group_wishes %>%
                 full_width = FALSE)
 ```
 
-# Step 7: Top Word {#step-7-top-word}
+# Step 7: Top Word
 
 ``` r
 ## Evaluation Likes ----
@@ -838,7 +835,7 @@ word_count_per_group_wishes %>%
                 full_width = FALSE)
 ```
 
-# Step 8: Word Cloud {#step-8-word-cloud}
+# Step 8: Word Cloud
 
 **Word clouds** are visually appealing and can provide a quick,
 intuitive representation of the most frequently occurring words in a
@@ -858,7 +855,7 @@ evaluation_wishes_filtered_cloud <- evaluation_wishes_filtered_tokenized %>% # n
 wordcloud2(evaluation_wishes_filtered_cloud, size = .5)
 ```
 
-# Step 9: Term Frequency - Inverse Document Frequency (TF - IDF) {#step-9-term-frequency---inverse-document-frequency-tf---idf}
+# Step 9: Term Frequency - Inverse Document Frequency (TF - IDF)
 
 **TF-IDF** is used to evaluate the importance of a word in a document
 relative to a collection of documents (a collection of documents is
@@ -866,7 +863,7 @@ called a corpus). By doing so, TF-IDF helps identify how significant a
 word is within a particular document compared to its general frequency
 in a set of documents.
 
-### Evaluation Likes {#evaluation-likes}
+### Evaluation Likes
 
 ``` r
 ## Evaluation Likes ----
@@ -951,7 +948,7 @@ top_popular_tfidf_words %>%
   coord_flip()
 ```
 
-### Evaluation Wishes {#evaluation-wishes}
+### Evaluation Wishes
 
 ``` r
 ### TF-IDF Score per Gender ----
