@@ -275,7 +275,7 @@ kable_theme <- function(dat, caption) {
 
 # Step 3: Load Dataset and Description {#sec-step-3-load-dataset-and-description}
 
-The 20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset is then loaded. The dataset and its metadata are available here: <https://drive.google.com/drive/folders/1-BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing>
+The 20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset is then loaded. The dataset and its metadata are available here: [https://drive.google.com/drive/folders/1BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing](https://drive.google.com/drive/folders/1-BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing){.uri}
 
 ```         
 student_performance_dataset <-
