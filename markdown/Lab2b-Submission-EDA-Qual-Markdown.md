@@ -1,54 +1,88 @@
 ---
-output:
-  github_document: 
-    toc: yes
-    toc_depth: 4
-    fig_width: 6
-    fig_height: 4
-    df_print: default
-editor_options:
-  chunk_output_type: console
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
+-   [Business Intelligence Lab Submission
+    Markdown](#business-intelligence-lab-submission-markdown)
+-   [Student Details](#student-details)
+-   [Setup Chunk](#setup-chunk)
+-   [Step 1: Install and Load
+    Packages](#step-1-install-and-load-packages)
+-   [Step 2: Customize the Visualizations, Tables, and Colour
+    Scheme](#sec-step-2-customize-the-visualizations-tables-and-colour-scheme)
+-   [Step 3: Load Dataset and
+    Description](#sec-step-3-load-dataset-and-description)
+    -   [Dimensions](#dimensions)
+    -   [Data Types](#data-types)
+    -   [Summary](#summary)
+-   [Step 4: Create a subset of the data using the "dplyr" package
+    ----](#step-4-create-a-subset-of-the-data-using-the-dplyr-package-----)
+-   [Step 5: Data Cleansing for Qualitative
+    Data](#step-5-data-cleansing-for-qualitative-data)
+    -   [Contractions](#contractions)
+    -   [Removing Special Characters](#removing-special-characters)
+    -   [Stemming/Lemmatization](#stemminglemmatization)
+    -   [Tokenization & Stopwords
+        Removal](#tokenization--stopwords-removal)
+-   [Step 6: Word Count](#sec-step-6-)
+-   [Step 7: Top Word](#step-7-top-word)
+-   [Step 8: Word Cloud](#step-8-word-cloud)
+-   [Step 9: Term Frequency - Inverse Document Frequency (TF -
+    IDF)](#step-9-term-frequency---inverse-document-frequency-tf---idf)
+    -   [Evaluation Likes](#evaluation-likes)
+    -   [Evaluation Wishes](#evaluation-wishes)
 
-# Business Intelligence Lab Submission Markdown
+# Business Intelligence Lab Submission Markdown {#business-intelligence-lab-submission-markdown}
 
 <Data Pink Panthers> \<9/10/23\>
 
 -   [Student Details](#student-details)
 -   [Setup Chunk](#setup-chunk)
 
-
 # Student Details {#student-details}
 
-+---------------------------------------------------+---------------------------------------------+--------------------+
-| **Student ID Numbers and Names of Group Members** | \| 1. 137315 - C - Yashvi Bhadania          |                    |
-|                                                   |                                             |                    |
-|                                                   | \| 2. 134668 - C - June Ndinda Mutiso       |                    |
-|                                                   |                                             |                    |
-|                                                   | \| 3. 135227 - C - Innocent Mbuvi           |                    |
-|                                                   |                                             |                    |
-|                                                   | \| 4. 134253 - C - Uzair Farooq             |                    |
-|                                                   |                                             |                    |
-|                                                   | \| 5. 135109 - C - Jackson Kaburu           |                    |
-+---------------------------------------------------+---------------------------------------------+--------------------+
-|                                                   | **GitHub Classroom Group Name**             | Data Pink Panthers |
-+---------------------------------------------------+---------------------------------------------+--------------------+
-| **Course Code**                                   | BBT4206                                     |                    |
-+---------------------------------------------------+---------------------------------------------+--------------------+
-| **Course Name**                                   | Business Intelligence II                    |                    |
-+---------------------------------------------------+---------------------------------------------+--------------------+
-| **Program**                                       | Bachelor of Business Information Technology |                    |
-+---------------------------------------------------+---------------------------------------------+--------------------+
-| **Semester Duration**                             | 21^st^ August 2023 to 28^th^ November 2023  |                    |
-+---------------------------------------------------+---------------------------------------------+--------------------+
++---------------------------+------------------------+---------------+
+| **Student ID Numbers and  | \| 1. 137315 - C -     |               |
+| Names of Group Members**  | Yashvi Bhadania        |               |
+|                           |                        |               |
+|                           | \| 2. 134668 - C -     |               |
+|                           | June Ndinda Mutiso     |               |
+|                           |                        |               |
+|                           | \| 3. 135227 - C -     |               |
+|                           | Innocent Mbuvi         |               |
+|                           |                        |               |
+|                           | \| 4. 134253 - C -     |               |
+|                           | Uzair Farooq           |               |
+|                           |                        |               |
+|                           | \| 5. 135109 - C -     |               |
+|                           | Jackson Kaburu         |               |
++---------------------------+------------------------+---------------+
+|                           | **GitHub Classroom     | Data Pink     |
+|                           | Group Name**           | Panthers      |
++---------------------------+------------------------+---------------+
+| **Course Code**           | BBT4206                |               |
++---------------------------+------------------------+---------------+
+| **Course Name**           | Business Intelligence  |               |
+|                           | II                     |               |
++---------------------------+------------------------+---------------+
+| **Program**               | Bachelor of Business   |               |
+|                           | Information Technology |               |
++---------------------------+------------------------+---------------+
+| **Semester Duration**     | 21^st^ August 2023 to  |               |
+|                           | 28^th^ November 2023   |               |
++---------------------------+------------------------+---------------+
 
 # Setup Chunk {#setup-chunk}
 
-**Note:** the following "*KnitR*" options have been set as the defaults in this markdown:\
+**Note:** the following "*KnitR*" options have been set as the defaults
+in this markdown:\
 `knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE, collapse = FALSE, tidy.opts = list(width.cutoff = 80), tidy = TRUE)`.
 
-More KnitR options are documented here <https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html> and here <https://yihui.org/knitr/options/>.
+More KnitR options are documented here
+<https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html> and
+here <https://yihui.org/knitr/options/>.
 
 ``` r
 knitr::opts_chunk$set(
@@ -62,7 +96,8 @@ knitr::opts_chunk$set(
 
 ------------------------------------------------------------------------
 
-**Note:** the following "*R Markdown*" options have been set as the defaults in this markdown:
+**Note:** the following "*R Markdown*" options have been set as the
+defaults in this markdown:
 
 > output:
 >
@@ -76,7 +111,7 @@ knitr::opts_chunk$set(
 > editor_options:\
 > chunk_output_type: console
 
-# Step 1: Install and Load Packages
+# Step 1: Install and Load Packages {#step-1-install-and-load-packages}
 
 We start by installing all the required packages
 
@@ -225,7 +260,7 @@ if (!is.element("readr", installed.packages()[, 1])) {
 require("readr")
 ```
 
-# Step 2: Customize the Visualizations, Tables, and Colour Scheme {#sec-step-2-customize-the-visualizations-tables-and-colour-scheme}
+# Step 2: Customize the Visualizations, Tables, and Colour Scheme
 
 ``` r
 blue_grey_colours_11 <- c("#27408E", "#304FAF", "#536CB5", "#6981c7", "#8da0db",
@@ -278,9 +313,12 @@ kable_theme <- function(dat, caption) {
 }
 ```
 
-# Step 3: Load Dataset and Description {#sec-step-3-load-dataset-and-description}
+# Step 3: Load Dataset and Description
 
-The 20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset is then loaded. The dataset and its metadata are available here: [https://drive.google.com/drive/folders/1BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing](https://drive.google.com/drive/folders/1-BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing){.uri}
+The 20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset is then
+loaded. The dataset and its metadata are available here: <a
+href="https://drive.google.com/drive/folders/1-BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing"
+class="uri">https://drive.google.com/drive/folders/1BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing</a>
 
 ```         
 student_performance_dataset <-
@@ -421,26 +459,26 @@ student_performance_dataset <-
 View(student_performance_dataset)
 ```
 
-### Dimensions
+### Dimensions {#dimensions}
 
 ```         
 dim(student_performance_dataset)
 ```
 
-### Data Types
+### Data Types {#data-types}
 
 ```         
 sapply(student_performance_dataset, class)
 glimpse(student_performance_dataset)
 ```
 
-### Summary
+### Summary {#summary}
 
 ```         
 summary(student_performance_dataset)
 ```
 
-# Step 4: Create a subset of the data using the "dplyr" package \-\-\--
+# Step 4: Create a subset of the data using the "dplyr" package ----
 
 ``` r
 evaluation_per_group_per_gender <- student_performance_dataset %>% # nolint
@@ -491,9 +529,9 @@ evaluation_per_group_per_gender %>%
   labs(x = "Class Group", y = "Average Rating")
 ```
 
-# Step 5: Data Cleansing for Qualitative Data
+# Step 5: Data Cleansing for Qualitative Data {#step-5-data-cleansing-for-qualitative-data}
 
-### Contractions
+### Contractions {#contractions}
 
 ``` r
 
@@ -541,7 +579,7 @@ evaluation_likes_and_wishes$Wishes <- sapply(evaluation_likes_and_wishes$Wishes,
 View(evaluation_likes_and_wishes)
 ```
 
-### Removing Special Characters
+### Removing Special Characters {#removing-special-characters}
 
 ``` r
 remove_special_characters <- function(doc) {
@@ -568,11 +606,13 @@ write.csv(evaluation_likes_and_wishes,
           row.names = FALSE)
 ```
 
-### Stemming/Lemmatization
+### Stemming/Lemmatization {#stemminglemmatization}
 
-**Stemming:** generally refers to removing suffixes from words to get the common origin.
+**Stemming:** generally refers to removing suffixes from words to get
+the common origin.
 
-**Lemmatization:** reducing inflected (or sometimes derived) words to their word stem, base or root form.
+**Lemmatization:** reducing inflected (or sometimes derived) words to
+their word stem, base or root form.
 
 ``` r
 #install package koRpus
@@ -598,9 +638,11 @@ View(evaluation_likes_and_wishes_lemmatized)
 
 ### Tokenization & Stopwords Removal
 
-**A stopword** is a commonly used word that is usually filtered out during text mining to improve the efficiency and focus of text analysis.
+**A stopword** is a commonly used word that is usually filtered out
+during text mining to improve the efficiency and focus of text analysis.
 
-**Tokenization** is the process of breaking out text into smaller meaningful units called tokens.
+**Tokenization** is the process of breaking out text into smaller
+meaningful units called tokens.
 
 ``` r
 
@@ -648,7 +690,7 @@ View(evaluation_likes_filtered_tokenized)
 View(evaluation_wishes_filtered_tokenized)
 ```
 
-# Step 6: Word Count {#sec-step-6-}
+# Step 6: Word Count
 
 ``` r
 ## Evaluation Likes ----
@@ -722,7 +764,7 @@ word_count_per_group_wishes %>%
                 full_width = FALSE)
 ```
 
-# Step 7: Top Word
+# Step 7: Top Word {#step-7-top-word}
 
 ``` r
 ## Evaluation Likes ----
@@ -796,9 +838,11 @@ word_count_per_group_wishes %>%
                 full_width = FALSE)
 ```
 
-# Step 8: Word Cloud
+# Step 8: Word Cloud {#step-8-word-cloud}
 
-**Word clouds** are visually appealing and can provide a quick, intuitive representation of the most frequently occurring words in a text or dataset.
+**Word clouds** are visually appealing and can provide a quick,
+intuitive representation of the most frequently occurring words in a
+text or dataset.
 
 ``` r
 ## Evaluation Likes ----
@@ -814,11 +858,15 @@ evaluation_wishes_filtered_cloud <- evaluation_wishes_filtered_tokenized %>% # n
 wordcloud2(evaluation_wishes_filtered_cloud, size = .5)
 ```
 
-# Step 9: Term Frequency - Inverse Document Frequency (TF - IDF)
+# Step 9: Term Frequency - Inverse Document Frequency (TF - IDF) {#step-9-term-frequency---inverse-document-frequency-tf---idf}
 
-**TF-IDF** is used to evaluate the importance of a word in a document relative to a collection of documents (a collection of documents is called a corpus). By doing so, TF-IDF helps identify how significant a word is within a particular document compared to its general frequency in a set of documents.
+**TF-IDF** is used to evaluate the importance of a word in a document
+relative to a collection of documents (a collection of documents is
+called a corpus). By doing so, TF-IDF helps identify how significant a
+word is within a particular document compared to its general frequency
+in a set of documents.
 
-### Evaluation Likes
+### Evaluation Likes {#evaluation-likes}
 
 ``` r
 ## Evaluation Likes ----
@@ -903,7 +951,7 @@ top_popular_tfidf_words %>%
   coord_flip()
 ```
 
-### Evaluation Wishes
+### Evaluation Wishes {#evaluation-wishes}
 
 ``` r
 ### TF-IDF Score per Gender ----
